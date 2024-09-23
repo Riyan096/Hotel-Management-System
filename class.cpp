@@ -4,3 +4,6 @@
 #include <cstring>
 using namespace std;
 
+void Hotel::menu(){
+
+}
