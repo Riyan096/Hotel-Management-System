@@ -6,9 +6,9 @@ using namespace std;
 class Hotel{
     private:
         int roomNumer;
-        char name[30];
-        char address[50];
-        char phone[15];
+        char *name;
+        char *address;
+        char *phone;
         long days;
         long cost;
         char rtype[30];
