@@ -5,6 +5,9 @@
 using namespace std;
 
 int main(){
-    Hotel hotel;
-    hotel.menu();
+    Hotel *hotel;
+    hotel = new Hotel();
+    hotel->add();
+
+    delete hotel;
 }

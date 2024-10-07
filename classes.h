@@ -5,13 +5,13 @@ using namespace std;
 
 class Hotel{
     private:
-        int roomNumer;
-        char *name;
-        char *address;
-        char *phone;
-        long days;
-        long cost;
-        char rtype[30];
+        int roomNumber;
+        string name;
+        string address;
+        string phone;
+        string roomType;
+        int days;
+        int cost;
         long pay;
         void breakfast(int);
         void lunch(int);
@@ -30,6 +30,7 @@ class Hotel{
         void updateAddress(int);
         void updatePhone(int);
         void updateDays(int);
+        // Hotel();
 };
 
 #endif
