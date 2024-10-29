@@ -17,12 +17,12 @@ class Hotel{
         void lunch(int);
         void dinner(int);
     public:
-        void menu();
-        void add();
-        void display();
+        void menu(); //complete
+        void add(); //complete
+        void display() const; //complete
         void rooms();
         void edit();
-        int check(int);
+        int check(int); //complete
         void modify();
         void deleteRecord();
         void restaurant();

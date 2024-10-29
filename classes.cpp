@@ -68,28 +68,58 @@ void Hotel::add(){
 	fout.close();
 }
 
-int Hotel::check(int r)
+int Hotel::check(int roomNum)
 {
 	int flag=0;
-	ifstream fin("Record.DAT",ios::in|ios::binary);
-	while(fin.read((char*)this,sizeof(Hotel)))
+	ifstream file("Record.DAT",ios::in|ios::binary);
+	while(file.read((char*)this,sizeof(Hotel)))
 	{
-		if(roomNumber==r)
+		if(roomNumber == roomNum)
 		{
 			flag=1;
 			break;
 		}
 		else
 		{
-		  if(r>100)
+		  if(roomNum > 100)
 		  {
 			flag=2;
 			break;
 		  }
 		}
 	}
-	fin.close();
+	file.close();
 	return(flag);
+}
+
+void Hotel::display() const{
+    system("clear");
+    ifstream file("Record.DAT",ios::in|ios::binary);
+    int roomNum, flag;
+    cout << "Enter the Room Number: ";
+    cin >> roomNum;
+    while(file.read((char*)this,sizeof(Hotel))){
+        if(roomNumber == roomNum){
+            system("clear");
+            cout << "\t\tCustomer Details" << endl;
+            cout << "\t\t" << setfill('-') << setw(25) << "" << endl << endl;
+            cout << "Room Number: " << roomNumber << endl;
+            cout << "Name: " << name << endl;
+            cout << "Address: " << address << endl;
+            cout << "Phone Number: " << phone << endl;
+            cout << "Staying for: " << days << " days" << endl;
+            cout << "Room Type: " << roomType << endl;
+            flag = 1;
+            break;
+        }
+    }
+    if(flag == 0){
+        cout << "\nThe specified room is vacant" << endl;
+    }
+    file.close();
+    cout<<"\n\n Press any key to continue.";
+	getchar();
+	getchar();
 }
 
 // void Hotel::menu(){
