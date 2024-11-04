@@ -122,6 +122,140 @@ void Hotel::display() const{
 	getchar();
 }
 
+void Hotel::rooms(){
+    system("clear");
+    ifstream file("Record.DAT",ios::in|ios::binary);
+    cout<<"\n\t\t\t    LIST OF ROOMS ALLOTED";
+	cout<<"\n\t\t\t   -----------------------";
+	cout<<"\n\n +---------+------------------+-----------------+--------------+--------------+";
+	cout<<"\n | Room No.|    Guest Name    |      Address    |   Room Type  |  Contact No. |";
+	cout<<"\n +---------+------------------+-----------------+--------------+--------------+";
+    while(file.read((char*)this,sizeof(Hotel))){
+        cout << "\n| " << setfill(' ') << setw(8) << roomNumber;
+        cout << " | " << setfill(' ') << setw(15) << name;
+        cout << " | " << setfill(' ') << setw(15) << address;
+        cout << " | " << setfill(' ') << setw(10) << roomType;
+        cout << " | " << setfill(' ') << setw(10) << phone;
+    }
+    cout << "\n +---------+------------------+-----------------+--------------+--------------+";
+    file.close();
+    cout<<"\n\n Press any key to continue.";
+    getchar();
+    getchar();
+}
+
+void Hotel::edit(){
+    system("clear");
+    int choice;
+    cout<<"\n\t\t\t    EDIT MENU";
+    cout<<"\n\t\t\t   -----------------------";
+    cout<<"\n\n 1. Edit Customer Information.";
+    cout<<"\n 2. Customer Check Out.";
+    cout<<"\n 3. Back to Main Menu.";
+    /*Possible room for more functions*/
+    cout<<"\n\n Enter your choice: ";
+    cin>>choice;
+    switch(choice){
+        case 1:
+            modify();
+            break;
+        case 2:
+            deleteRecord();
+            break;
+        case 3:
+            menu();
+            break;
+        default:
+            cout << "\nInvalid Choice!";
+            break;
+    }
+    cout<<"\n\n Press any key to continue.";
+    getchar();
+    getchar();
+}
+
+void Hotel::modify(){
+    system("clear");
+    int roomNum, choice;
+    cout << "\n\t\tCUSTOMER INFORMATION EDIT MENU";
+    cout << "\n\t\t-------------------------------";
+    cout << "\n\n Enter the room number of the customer you want to edit: ";
+    cin >> roomNum;
+    system("clear");
+    cout << "\n 1. Edit Name";
+    cout << "\n 2. Edit Address";
+    cout << "\n 3. Edit Phone Number";
+    cout << "\n 4. Edit Number of Days Customer Has Stayed";
+    cout << "\n 5. Back to Edit Menu";
+    cout << "\n\n Enter your choice: ";
+    cin >> choice;
+    switch(choice){
+        case 1:
+            updateName(roomNum);
+            break;
+        case 2:
+            updateAddress(roomNum);
+            break;
+        case 3:
+            updatePhone(roomNum);
+            break;
+        case 4:
+            updateDays(roomNum);
+            break;
+        case 5:
+            edit();
+            break;
+        default:
+            cout << "\nInvalid Choice!";
+            getchar(); //test what this does, remove if not needed
+            getchar();
+            break;
+    }
+}
+
+void Hotel::deleteRecord(){
+    system("clear");
+    int roomNum, flag;
+    char choice;
+    cout << "\n Enter the Room Number: ";
+    cin >> roomNum;
+    system("clear");
+    ifstream file_in("Record.DAT", ios::in|ios::binary);
+    ofstream file_out("temp.DAT", ios::out|ios::binary);
+    while(file_in.read((char*)this, sizeof(Hotel))){
+        if(roomNumber = roomNum){
+            cout << "\n Name: " << name;
+            cout << "\n Address: " << address;
+            cout << "\n Phone Number: " << phone;
+            cout << "\n Number of Days Customer Has Stayed: " << days;
+            cout << "\n Your total bill is: $" << cost;
+            cout << "\n\n Would you like to check out this customer? (Enter Y for yes, N for no): ";
+            cin >> choice;
+            if(choice == 'y' || choice == 'Y'){ //could use a validation check
+                cout << "\n Customer checked out.";
+                flag = 1;
+            }
+            else if(choice == 'n' || choice == 'N'){
+                file_out.write((char*)this, sizeof(Hotel));
+                cout << "\n Customer not checked out.";
+            }
+        }
+        else{
+            file_out.write((char*)this, sizeof(Hotel));
+        }
+    }
+    file_in.close();
+    file_out.close();
+    if(flag==0){
+        cout << "\nThe room is currently vacant.";
+    }
+    remove("Record.DAT");
+    rename("temp.DAT", "Record.DAT");
+    cout<<"\n\n Press any key to continue.";
+    getchar();
+    getchar();   
+}
+
 // void Hotel::menu(){
 //     int choice = 0;
 //     while(choice != 6){

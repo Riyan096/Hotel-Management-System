@@ -20,11 +20,11 @@ class Hotel{
         void menu(); //complete
         void add(); //complete
         void display() const; //complete
-        void rooms();
-        void edit();
+        void rooms(); //complete
+        void edit(); //complete
         int check(int); //complete
-        void modify();
-        void deleteRecord();
+        void modify(); //complete
+        void deleteRecord(); //complete
         void restaurant();
         void updateName(int);
         void updateAddress(int);
