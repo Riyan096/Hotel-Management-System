@@ -536,9 +536,6 @@ void Hotel::menu(){
             case 5:
                 restaurant();
                 break;
-            case 6:
-                Hotel::~Hotel();
-                break;
             default:
                 cout << "Invalid option! Available options are 1-6" << endl;
                 cout << "Press any key to continue";
