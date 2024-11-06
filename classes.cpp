@@ -3,6 +3,7 @@
 #include <fstream>
 #include <cstring>
 #include <iomanip>
+#include <string.h>
 using namespace std;
 
 
@@ -47,15 +48,15 @@ void Hotel::add(){
             cout << "\nEnter number of days customer will stay for: ";
             cin >> days;
             if (roomNumber >= 1 && roomNumber <= 50){
-                roomType = "Deluxe";
+                setRoomType("Deluxe");
                 cost = days * 300;
             }
             else if (roomNumber > 50 && roomNumber <= 80){
-                roomType = "Executive";
+                setRoomType("Executive");
                 cost = days * 500;
             }
             else if (roomNumber > 80 && roomNumber <= 100){
-                roomType = "Presidential";
+                setRoomType("Presidential");
                 cost = days * 700;
             }
         }
@@ -68,11 +69,19 @@ void Hotel::add(){
 	fout.close();
 }
 
+void Hotel::setRoomType(const string &type){
+    if(roomType != nullptr){
+        delete[] roomType;
+    }
+    roomType = new char[type.length() + 1];
+    strcpy(roomType, type.c_str());
+}
+
 int Hotel::check(int roomNum)
 {
 	int flag=0;
-	ifstream file("Record.DAT",ios::in|ios::binary);
-	while(file.read((char*)this,sizeof(Hotel)))
+	ifstream file_in("Record.DAT",ios::in|ios::binary);
+	while(file_in.read((char*)this,sizeof(Hotel)))
 	{
 		if(roomNumber == roomNum)
 		{
@@ -88,17 +97,17 @@ int Hotel::check(int roomNum)
 		  }
 		}
 	}
-	file.close();
+	file_in.close();
 	return(flag);
 }
 
 void Hotel::display() const{
     system("clear");
-    ifstream file("Record.DAT",ios::in|ios::binary);
+    ifstream file_in("Record.DAT",ios::in|ios::binary);
     int roomNum, flag;
     cout << "Enter the Room Number: ";
     cin >> roomNum;
-    while(file.read((char*)this,sizeof(Hotel))){
+    while(file_in.read((char*)this,sizeof(Hotel))){
         if(roomNumber == roomNum){
             system("clear");
             cout << "\t\tCustomer Details" << endl;
@@ -116,7 +125,7 @@ void Hotel::display() const{
     if(flag == 0){
         cout << "\nThe specified room is vacant" << endl;
     }
-    file.close();
+    file_in.close();
     cout<<"\n\n Press any key to continue.";
 	getchar();
 	getchar();
@@ -124,13 +133,13 @@ void Hotel::display() const{
 
 void Hotel::rooms(){
     system("clear");
-    ifstream file("Record.DAT",ios::in|ios::binary);
+    ifstream file_in("Record.DAT",ios::in|ios::binary);
     cout<<"\n\t\t\t    LIST OF ROOMS ALLOTED";
 	cout<<"\n\t\t\t   -----------------------";
 	cout<<"\n\n +---------+------------------+-----------------+--------------+--------------+";
 	cout<<"\n | Room No.|    Guest Name    |      Address    |   Room Type  |  Contact No. |";
 	cout<<"\n +---------+------------------+-----------------+--------------+--------------+";
-    while(file.read((char*)this,sizeof(Hotel))){
+    while(file_in.read((char*)this,sizeof(Hotel))){
         cout << "\n| " << setfill(' ') << setw(8) << roomNumber;
         cout << " | " << setfill(' ') << setw(15) << name;
         cout << " | " << setfill(' ') << setw(15) << address;
@@ -138,7 +147,7 @@ void Hotel::rooms(){
         cout << " | " << setfill(' ') << setw(10) << phone;
     }
     cout << "\n +---------+------------------+-----------------+--------------+--------------+";
-    file.close();
+    file_in.close();
     cout<<"\n\n Press any key to continue.";
     getchar();
     getchar();
@@ -223,7 +232,7 @@ void Hotel::deleteRecord(){
     ifstream file_in("Record.DAT", ios::in|ios::binary);
     ofstream file_out("temp.DAT", ios::out|ios::binary);
     while(file_in.read((char*)this, sizeof(Hotel))){
-        if(roomNumber = roomNum){
+        if(roomNumber == roomNum){
             cout << "\n Name: " << name;
             cout << "\n Address: " << address;
             cout << "\n Phone Number: " << phone;
@@ -256,42 +265,292 @@ void Hotel::deleteRecord(){
     getchar();   
 }
 
-// void Hotel::menu(){
-//     int choice = 0;
-//     while(choice != 6){
-//         system("clear");
-//         cout << "\t\t   Welcome to Hotel Management System" << endl;
-//         cout << "\t\t" << setfill('-') << setw(40) << "" << endl << endl;
-//         cout << "Press the numbers listed to choose an option:" << endl << endl;
-//         cout<< "1. Book A Room" << endl;
-// 		cout<< "2. Customer Information" << endl;
-// 		cout<< "3. Rooms Allotted" << endl;
-// 		cout<< "4. Edit Customer Details" << endl;
-// 		cout<< "5. Order Food from Restaurant" << endl;
-// 		cout<< "6. Exit" << endl << endl;
-// 		cout<< "Enter Your Choice: ";
-// 		cin >> choice;
-//         switch(choice){
-//             case 1:
-//                 add();
-//                 break;
-//             case 2:
-//                 display();
-//                 break;
-//             case 3:
-//                 rooms();
-//                 break;
-//             case 4:
-//                 edit();
-//                 break;
-//             case 5:
-//                 restaurant();
-//                 break;
-//             default:
-//                 cout << "Invalid option! Available options are 1-6" << endl;
-//                 cout << "Press any key to continue";
-//                 cin.get();
-//         }
-//     }
-// }
+void Hotel::updateName(int roomNum){
+    long index, flag = 0;
+    fstream file_in("Record.DAT", ios::in|ios::binary);
+    while(!file_in.eof()){
+        index = file_in.tellg();
+        file_in.read((char*)this, sizeof(Hotel));
+        if(roomNumber == roomNum){
+            cout << "\n Enter the new name: ";
+            cin >> name;
+            file_in.seekg(index);
+            file_in.write((char*)this, sizeof(Hotel));
+            cout << "\n Name updated successfully.";
+            flag = 1;
+            break;
+        }
+    }
+    if(flag == 0){
+        cout << "\n Room is vacant.";
+    }
+    file_in.close();
+    cout<<"\n\n Press any key to continue.";
+    getchar();
+    getchar();  
+}
 
+void Hotel::updateAddress(int roomNum){
+    long index, flag = 0;
+    fstream file_in("Record.DAT", ios::in|ios::binary);
+    while(!file_in.eof()){
+        index = file_in.tellg();
+        file_in.read((char*)this, sizeof(Hotel));
+        if(roomNumber == roomNum){
+            cout << "\n Enter the new address: ";
+            cin >> address;
+            file_in.seekg(index);
+            file_in.write((char*)this, sizeof(Hotel));
+            cout << "\n Address updated successfully.";
+            flag = 1;
+            break;
+        }
+    }
+    if(flag == 0){
+        cout << "\n Room is vacant.";
+    }
+    file_in.close();
+    cout<<"\n\n Press any key to continue.";
+    getchar();
+    getchar();
+}
+
+void Hotel::updatePhone(int roomNum){
+    long index, flag = 0;
+    fstream file_in("Record.DAT", ios::in|ios::binary);
+    while(!file_in.eof()){
+        index = file_in.tellg();
+        file_in.read((char*)this, sizeof(Hotel));
+        if(roomNumber == roomNum){
+            cout << "\n Enter the new phone number: ";
+            cin >> phone;
+            file_in.seekg(index);
+            file_in.write((char*)this, sizeof(Hotel));
+            cout << "\n Phone number updated successfully.";
+            flag = 1;
+            break;
+        }
+    }
+    if(flag == 0){
+        cout << "\n Room is vacant.";
+    }
+    file_in.close();
+    cout<<"\n\n Press any key to continue.";
+    getchar();
+    getchar();
+}
+
+void Hotel::updateDays(int roomNum){
+    long index, flag = 0;
+    fstream file_in("Record.DAT", ios::in|ios::binary);
+    while(!file_in.eof()){
+        index = file_in.tellg();
+        file_in.read((char*)this, sizeof(Hotel));
+        if(roomNumber == roomNum){
+            cout << "\n Enter the new number of days: ";
+            cin >> days;
+            if(roomNumber >= 1 && roomNumber <= 50)
+			{
+				setRoomType("Deluxe");
+				cost = days * 10000;
+			}
+			else
+			{
+				if(roomNumber >= 51 && roomNumber <= 80)
+				{
+				   setRoomType("Executive");
+				   cost = days * 12500;
+				}
+				else
+				{
+					if(roomNumber >= 81 && roomNumber <= 100)
+					{
+					   setRoomType("Presidential");
+					   cost = days * 15000;
+					}
+				}
+			}
+            file_in.seekg(index);
+            file_in.write((char*)this, sizeof(Hotel));
+            cout << "\n Number of days updated successfully.";
+            flag = 1;
+            break;
+        }
+    }
+    if(flag == 0){
+        cout << "\n Room is vacant.";
+    }
+    file_in.close();
+    cout<<"\n\n Press any key to continue.";
+    getchar();
+    getchar();
+}
+
+void Hotel::restaurant(){
+    system("clear");
+    int roomNum, choice, numPeople;
+    cout << "\n RESTAURANT MENU:";
+    cout << "\n --------------- ";
+    cout << "Enter 1 to order breakfast, 2 to order lunch, 3 to order dinner";
+    cin >> choice;
+    system("clear");
+    cout << "Enter the room number would you like to order for: ";
+    cin >> roomNum;
+    switch(choice){
+        case 1:
+            breakfast(roomNum);
+            break;
+        case 2:
+            lunch(roomNum);
+            break;
+        case 3:
+            dinner(roomNum);
+            break;
+        default:
+            cout << "\n Invalid choice.";
+            break;
+    }
+    cout << "\n\n Press any key to continue.";
+	getchar();
+	getchar();
+}
+
+void Hotel::breakfast(int roomNum){
+    system("clear");
+    int numPeople, flag = 0;
+    long index;
+    cout << " Enter number of people: ";
+	cin >> numPeople;
+	fstream file_in("Record.DAT",ios::in|ios::out|ios::binary);
+	while(!file_in.eof())
+	{
+		index = file_in.tellg();
+		file_in.read((char*)this,sizeof(Hotel));
+		if(roomNumber == roomNum)
+		{
+			pay = 25 * numPeople;
+			cost = cost + pay;
+			file_in.seekg(index);
+			file_in.write((char*)this,sizeof(Hotel));
+			cout<<"\n Amount added to the bill: $ "<< pay;
+			flag=1;
+			break;
+		}
+	}
+	if(flag==0){
+		cout<<"\n Room is vacant.";
+    }
+    cout << "\n\n Press any key to continue.";
+	getchar();
+	getchar();
+	file_in.close();
+}
+
+void Hotel::lunch(int roomNum){
+    system("clear");
+    int numPeople, flag = 0;
+    long index;
+    cout << " Enter number of people: ";
+    cin >> numPeople;
+    fstream file_in("Record.DAT",ios::in|ios::out|ios::binary);
+    while(!file_in.eof()){
+        index = file_in.tellg();
+        file_in.read((char*)this,sizeof(Hotel));
+        if(roomNumber == roomNum){
+            pay = 75 * numPeople;
+            cost = cost + pay;
+            file_in.seekg(index);
+            file_in.write((char*)this,sizeof(Hotel));
+            cout<<"\n Amount added to the bill: $ "<< pay;
+            flag=1;
+            break;
+        }
+    }
+    if(flag == 0){
+        cout<<"\n Room is vacant.";
+    }
+    file_in.close();
+    cout << "\n\n Press any key to continue.";
+    getchar();
+    getchar();
+}
+
+void Hotel::dinner(int roomNum){
+    system("clear");
+    int numPeople, flag = 0;
+    long index;
+    cout << " Enter number of people: ";
+    cin >> numPeople;
+    fstream file_in("Record.DAT",ios::in|ios::out|ios::binary);
+    while(!file_in.eof()){
+        index = file_in.tellg();
+        file_in.read((char*)this,sizeof(Hotel));
+        if(roomNumber == roomNum){
+            pay = 50 * numPeople;
+            cost = cost + pay;
+            file_in.seekg(index);
+            file_in.write((char*)this,sizeof(Hotel));
+            cout<<"\n Amount added to the bill: $ "<< pay;
+            flag=1;
+            break;
+        }
+    }
+    if(flag == 0){
+        cout<<"\n Room is vacant.";
+    }
+    file_in.close();
+    cout << "\n\n Press any key to continue.";
+    getchar();
+    getchar();
+}
+
+
+void Hotel::menu(){
+    int choice = 0;
+    while(choice != 6){
+        system("clear");
+        cout << "\t\t   Welcome to Hotel Management System" << endl;
+        cout << "\t\t" << setfill('-') << setw(40) << "" << endl << endl;
+        cout << "Press the numbers listed to choose an option:" << endl << endl;
+        cout<< "1. Book A Room" << endl;
+		cout<< "2. Customer Information" << endl;
+		cout<< "3. Rooms Allotted" << endl;
+		cout<< "4. Edit Customer Details" << endl;
+		cout<< "5. Order Food from Restaurant" << endl;
+		cout<< "6. Exit" << endl << endl;
+		cout<< "Enter Your Choice: ";
+		cin >> choice;
+        switch(choice){
+            case 1:
+                add();
+                break;
+            case 2:
+                display();
+                break;
+            case 3:
+                rooms();
+                break;
+            case 4:
+                edit();
+                break;
+            case 5:
+                restaurant();
+                break;
+            default:
+                cout << "Invalid option! Available options are 1-6" << endl;
+                cout << "Press any key to continue";
+                cin.get();
+        }
+    }
+}
+
+Hotel::Hotel(){
+    menu();
+}
+
+Hotel::~Hotel(){
+    delete[] roomType;
+    cout << "\n\n\t\t   Thank you for using Hotel Management System!" << endl;
+    cout << "\t\t   Press any key to exit..." << endl;
+    getchar();
+}

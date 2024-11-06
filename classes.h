@@ -9,7 +9,7 @@ class Hotel{
         string name;
         string address;
         string phone;
-        string roomType;
+        char* roomType;
         int days;
         int cost;
         long pay;
@@ -17,20 +17,22 @@ class Hotel{
         void lunch(int);
         void dinner(int);
     public:
-        void menu(); //complete
-        void add(); //complete
-        void display() const; //complete
-        void rooms(); //complete
-        void edit(); //complete
-        int check(int); //complete
-        void modify(); //complete
-        void deleteRecord(); //complete
+        void menu();
+        void add();
+        void display() const;
+        void rooms();
+        void edit();
+        int check(int);
+        void modify();
+        void deleteRecord();
         void restaurant();
         void updateName(int);
         void updateAddress(int);
         void updatePhone(int);
         void updateDays(int);
-        // Hotel();
+        void setRoomType(const string &type);
+        Hotel();
+        ~Hotel();
 };
 
 #endif

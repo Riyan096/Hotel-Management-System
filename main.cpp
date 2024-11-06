@@ -7,7 +7,6 @@ using namespace std;
 int main(){
     Hotel *hotel;
     hotel = new Hotel();
-    hotel->add();
 
     delete hotel;
 }
